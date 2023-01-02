@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_scanner/ui/router.dart';
 import 'package:qr_scanner/viewmodels/codes_provider.dart';
+
+import '../../../localization/app_localization.dart';
 
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({Key? key}) : super(key: key);
@@ -13,17 +16,19 @@ class ScannerScreen extends StatefulWidget {
 }
 
 class _ScannerScreenState extends State<ScannerScreen> {
-
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   late CodesProvider codesProvider;
+
   void goToHistoryScreen() {
-    Navigator.pushNamed(context, 'history');
+    Navigator.pushReplacementNamed(context, historyRoute);
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     codesProvider = Provider.of<CodesProvider>(context, listen: false);
   }
+
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
   @override
@@ -74,7 +79,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     controller.scannedDataStream.listen((scanData) {
       codesProvider.newBarcode = scanData;
       controller.pauseCamera();
-      Navigator.pushReplacementNamed(context, 'code_info');
+      Navigator.pushReplacementNamed(context, codeInfoRoute);
     });
   }
 
@@ -82,7 +87,8 @@ class _ScannerScreenState extends State<ScannerScreen> {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('no Permission')),
+        SnackBar(
+            content: Text(AppLocalizations.getLocalization().noPermission)),
       );
     }
   }

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_scanner/models/qr_code_model.dart';
 import 'package:qr_scanner/ui/router.dart';
-import 'package:qr_scanner/ui/views/history/history_screen.dart';
 import 'package:qr_scanner/ui/views/scanner/scanner_screen.dart';
+import 'package:qr_scanner/ui/views/splash/splash_screen.dart';
+import 'package:qr_scanner/utils.dart';
 import 'package:qr_scanner/viewmodels/codes_provider.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -12,7 +13,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(QrCodeAdapter());
-  box = await Hive.openBox<QrCode>("codesbox");
+  box = await Hive.openBox<QrCode>(Utils.boxName);
   runApp(const MyApp());
 }
 
@@ -26,14 +27,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => CodesProvider()),
       ],
-      child: MaterialApp(
-        title: 'Flutter Challenge',
+      child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const ScannerScreen(),
-        initialRoute: 'scanner',
+        home: SplashScreen(),
+        initialRoute: initialRoute,
         onGenerateRoute: AppRouter.generateRoute,
       ),
     );

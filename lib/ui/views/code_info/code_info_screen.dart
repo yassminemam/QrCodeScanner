@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../../main.dart';
+import 'package:qr_scanner/ui/router.dart';
+import '../../../localization/app_localization.dart';
 import '../../../viewmodels/codes_provider.dart';
 
 class CodeInfoScreen extends StatefulWidget {
@@ -23,16 +23,19 @@ class _CodeInfoScreenState extends State<CodeInfoScreen> {
 
   goToCodesHistoryScreen() async {
     codesProvider.addNewCodeToList().then((value) {
-      Navigator.pushReplacementNamed(context, 'history');
+      Navigator.pushReplacementNamed(context, historyRoute);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.getLocalization().codeInfo),
+      ),
       body: Center(
           child: Text(
-        'Barcode Type: ${describeEnum(codesProvider.newBarcode!.format)} Data: ${codesProvider.newBarcode!.code}',
+        '${AppLocalizations.getLocalization().codeType} ${describeEnum(codesProvider.newBarcode!.format)} ${AppLocalizations.getLocalization().data} ${codesProvider.newBarcode!.code}',
         textAlign: TextAlign.center,
       )),
       floatingActionButton: FloatingActionButton(
